@@ -62,6 +62,14 @@ body {
 .sidebar {
   width: 420px;
   flex-shrink: 0;
+  transition: width 0.4s ease;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
 }
 
 .main-content {
@@ -110,6 +118,18 @@ header {
   margin-bottom: 8px;
   position: relative;
   overflow: hidden;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  header {
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  header h1 { font-size: 1.25rem; }
+  #Date { font-size: 0.75rem; }
 }
 
 header::after {
@@ -213,6 +233,20 @@ input[type="text"]:focus {
 .filter-label { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; cursor: pointer; color: var(--text-secondary); }
 
 .lottery-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
+
+@media (max-width: 480px) {
+  .lottery-layout {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .lottery-btns {
+    flex-direction: row;
+    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .lottery-btns { display: flex; flex-direction: column; gap: 6px; }
 .btn-tool {
   font-size: var(--font-xs); 
@@ -232,6 +266,18 @@ input[type="text"]:focus {
 
 .parity-grid { display: flex; flex-direction: column; gap: 8px; }
 .yao-row { display: grid; grid-template-columns: 45px 1fr 90px; gap: 10px; align-items: center; }
+
+@media (max-width: 480px) {
+  .yao-row {
+    grid-template-columns: 45px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .yao-row .ant-select {
+    grid-column: 1 / -1;
+    width: 100% !important;
+  }
+}
+
 .yao-label { font-size: 0.8125rem; font-weight: 600; }
 
 .charts-v { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
@@ -345,5 +391,24 @@ input[type="text"]:focus {
 .gua-card:hover {
   background: rgba(15, 23, 42, 0.6);
   border-color: var(--primary);
-  transform: scale(1.05);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+  .table_gua td { padding: 6px; font-size: 0.8rem; min-width: 35px; }
+  .table_gua th { padding: 4px 8px; font-size: 0.75rem; }
+  .up-down-col { font-size: 16px; padding: 0 4px; }
+  .charts-v { gap: 12px; }
+  .gua-card { padding: 8px; }
+}
+
+@media (max-width: 380px) {
+  .lottery-layout > div:first-child > div {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+  .lottery-layout > div:first-child span {
+    width: auto !important;
+  }
 }

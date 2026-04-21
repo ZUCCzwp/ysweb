@@ -28,7 +28,7 @@ function App() {
   const [activeLotteryBtn, setActiveLotteryBtn] = useState<number[]>([0, 1, 2]);
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [isLoading, setIsLoading] = useState(false);
-  const [isAutoMode, setIsAutoMode] = useState(false);
+  const [isAutoMode, setIsAutoMode] = useState(true);
 
   // Parity Pattern
   const [parityNums, setParityNums] = useState(['', '', '', '', '', '', '']);
@@ -40,6 +40,13 @@ function App() {
 
   // Results State
   const [results, setResults] = useState<any>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -303,7 +310,11 @@ function App() {
               <motion.aside 
                 className="sidebar"
                 initial={{ width: 0, opacity: 0, marginRight: 0 }}
-                animate={{ width: 420, opacity: 1, marginRight: 24 }}
+                animate={{ 
+                  width: isMobile ? '100%' : 420, 
+                  opacity: 1, 
+                  marginRight: isMobile ? 0 : 24 
+                }}
                 exit={{ width: 0, opacity: 0, marginRight: 0 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                 style={{ overflow: 'hidden' }}
@@ -331,9 +342,9 @@ function App() {
                 >
                   <div className="form-group">
                     <label className="label">提取随机数</label>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <input type="text" value={text0} onChange={e => setText0(e.target.value)} placeholder="数据位" />
-                      <button className="btn btn-primary" onClick={getNumFromURL} style={{ width: '80px' }}>获取</button>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      <input type="text" value={text0} onChange={e => setText0(e.target.value)} placeholder="数据位" style={{ flex: 1, minWidth: '120px' }} />
+                      <button className="btn btn-primary" onClick={getNumFromURL} style={{ width: isMobile ? '100%' : '80px' }}>获取</button>
                     </div>
                   </div>
                   <div className="form-group">
@@ -519,7 +530,8 @@ function App() {
                             next[i] = val;
                             setParityPics(next);
                           }}
-                          style={{ width: 90 }}
+                          className="yao-select"
+                          style={{ width: isMobile ? '100%' : 90 }}
                           options={[
                             { label: Div.LAOYIN, value: Div.LAOYIN },
                             { label: Div.YANG, value: Div.YANG },
@@ -542,7 +554,7 @@ function App() {
         <main className="main-content">
           <motion.section 
             className="card" 
-            style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
