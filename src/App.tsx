@@ -210,7 +210,8 @@ function App() {
   const fetchLotteryData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/api/lottery/latest?lottery_id=HN5FC');
+      const baseUrl = import.meta.env.VITE_API_URL || '/api';
+      const response = await fetch(`${baseUrl}/lottery/latest?lottery_id=HN5FC`);
       const result = await response.json();
       if (result.data) {
         let sorted = [...result.data];

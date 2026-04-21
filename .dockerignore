@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.DS_Store
+*.md
+.github
+.vscode
+.idea
+Dockerfile
+docker-compose*.yml
+nginx.conf
