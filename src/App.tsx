@@ -1,4 +1,14 @@
 import { useState, useEffect } from 'react';
+import { ConfigProvider, theme, Select, Segmented, Button, Space, Typography, Tag } from 'antd';
+import { 
+  RefreshCw, 
+  Settings, 
+  Database, 
+  Fingerprint, 
+  ArrowUpDown, 
+  Layers,
+  Zap
+} from 'lucide-react';
 import * as Div from './utils/divination';
 
 function App() {
@@ -227,6 +237,17 @@ function App() {
   };
 
   return (
+    <ConfigProvider
+      theme={{
+        algorithm: theme.darkAlgorithm,
+        token: {
+          colorPrimary: '#6366f1',
+          borderRadius: 8,
+          colorBgBase: '#0f172a',
+          colorBgContainer: '#1e293b',
+        },
+      }}
+    >
     <div className="layout">
       <header>
         <h1>云生 <span style={{ fontSize: '0.5em', opacity: 0.6, fontWeight: 'normal' }}>| 六期成卦系统</span></h1>
@@ -246,10 +267,15 @@ function App() {
           </div>
           <div className="form-group">
             <label className="label">输入模式</label>
-            <select value={inputType} onChange={e => setInputType(e.target.value)}>
-              <option value="1">手动输入</option>
-              <option value="2">联动网站数据</option>
-            </select>
+            <Segmented
+              block
+              value={inputType}
+              onChange={value => setInputType(value as string)}
+              options={[
+                { label: '手动输入', value: '1', icon: <Fingerprint size={14} /> },
+                { label: '联动数据', value: '2', icon: <Database size={14} /> },
+              ]}
+            />
           </div>
           {inputType === '2' && (
             <div className="form-group">
@@ -283,22 +309,40 @@ function App() {
         <section className="card" style={{ marginBottom: '20px' }}>
           <div className="card-header">
             <span className="card-title">🧩 期号定位</span>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <select value={isAutoMode ? 'auto' : 'manual'} onChange={e => setIsAutoMode(e.target.value === 'auto')} style={{ width: '85px', height: '28px', fontSize: '12px', padding: '0 4px' }}>
-                <option value="manual">手动</option>
-                <option value="auto">自动同步</option>
-              </select>
-              <select value={sortOrder} onChange={e => setSortOrder(e.target.value as any)} style={{ width: '65px', height: '28px', fontSize: '12px', padding: '0 4px' }}>
-                <option value="desc">倒序</option>
-                <option value="asc">正序</option>
-              </select>
+            <Space size={8}>
+              <Select
+                size="small"
+                value={isAutoMode ? 'auto' : 'manual'}
+                onChange={val => setIsAutoMode(val === 'auto')}
+                style={{ width: 95 }}
+                options={[
+                  { label: '手动', value: 'manual' },
+                  { label: '自动同步', value: 'auto' },
+                ]}
+                popupMatchSelectWidth={false}
+              />
+              <Segmented
+                size="small"
+                value={sortOrder}
+                onChange={val => setSortOrder(val as any)}
+                options={[
+                  { label: '倒', value: 'desc' },
+                  { label: '正', value: 'asc' },
+                ]}
+              />
               {!isAutoMode && (
-                <button className="btn btn-primary" onClick={fetchLotteryData} disabled={isLoading} style={{ width: '45px', height: '28px', fontSize: '11px', padding: 0 }}>
-                  {isLoading ? '...' : '同步'}
-                </button>
+                <Button
+                  type="primary"
+                  size="small"
+                  icon={<RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />}
+                  onClick={fetchLotteryData}
+                  loading={isLoading}
+                >
+                  同步
+                </Button>
               )}
               {isAutoMode && <span className="pulse-dot" title="自动同步中"></span>}
-            </div>
+            </Space>
           </div>
           <div className="lottery-layout">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -356,14 +400,21 @@ function App() {
                   next[i] = e.target.value;
                   setParityNums(next);
                 }} />
-                <select value={parityPics[i]} onChange={e => {
-                  const next = [...parityPics];
-                  next[i] = e.target.value;
-                  setParityPics(next);
-                }}>
-                  <option>{Div.LAOYIN}</option><option>{Div.YANG}</option>
-                  <option>{Div.YIN}</option><option>{Div.LAOYANG}</option>
-                </select>
+                <Select
+                  value={parityPics[i]}
+                  onChange={val => {
+                    const next = [...parityPics];
+                    next[i] = val;
+                    setParityPics(next);
+                  }}
+                  style={{ width: 90 }}
+                  options={[
+                    { label: Div.LAOYIN, value: Div.LAOYIN },
+                    { label: Div.YANG, value: Div.YANG },
+                    { label: Div.YIN, value: Div.YIN },
+                    { label: Div.LAOYANG, value: Div.LAOYANG },
+                  ]}
+                />
               </div>
             ))}
           </div>
@@ -446,6 +497,7 @@ function App() {
         </div>
       </main>
     </div>
+    </ConfigProvider>
   );
 }
 

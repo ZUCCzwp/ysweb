@@ -81,7 +81,7 @@ header h1 { font-size: 1.5rem; letter-spacing: -0.025em; color: var(--text-prima
 .form-group { margin-bottom: 16px; }
 .label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
 
-input[type="text"], select {
+input[type="text"] {
   width: 100%;
   background-color: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -92,7 +92,7 @@ input[type="text"], select {
   transition: all 0.2s;
 }
 
-input[type="text"]:focus, select:focus {
+input[type="text"]:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
