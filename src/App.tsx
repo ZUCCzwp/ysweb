@@ -425,16 +425,16 @@ function App() {
                 </motion.section>
 
                 {/* 3. Immediate Analysis */}
-                <motion.section
-                  className="card"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                <motion.section 
+                  className="card" 
+                  initial={{ opacity: 0, scale: 0.95 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
                   transition={{ delay: 0.3 }}
-                  style={{ flex: '0 1 180px', padding: '6px 8px' }}
+                  style={{ flex: '0 1 180px', padding: '12px' }}
                 >
-                  <div className="card-header" onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)} style={{ cursor: 'pointer', marginBottom: isAnalysisExpanded ? '2px' : 0 }}>
-                    <span className="card-title" style={{ fontSize: '0.8rem' }}>⚛️ 即时分析</span>
-                    {isAnalysisExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  <div className="card-header" onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)} style={{ cursor: 'pointer', marginBottom: isAnalysisExpanded ? '8px' : 0 }}>
+                    <span className="card-title" style={{ fontSize: '0.85rem' }}>⚛️ 即时分析</span>
+                    {isAnalysisExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </div>
                   <AnimatePresence>
                     {isAnalysisExpanded && (
@@ -512,7 +512,7 @@ function NinePalaces({ data, isGua, isCompact }: { data: any[], isGua?: boolean,
         <div
           key={i}
           className="box"
-          style={{ 
+          style={{
             height: isCompact ? '32px' : '60px',
             width: isCompact ? '32px' : '70px',
             fontSize: isCompact ? '11px' : '14px',
