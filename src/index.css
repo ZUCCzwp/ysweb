@@ -41,7 +41,7 @@ body {
 }
 
 .layout {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -282,7 +282,7 @@ input[type="text"]:focus {
 .btn-tool:hover { background: var(--border); color: var(--text-primary); }
 
 .parity-grid { display: flex; flex-direction: column; gap: 8px; }
-.yao-row { display: grid; grid-template-columns: 45px 1fr 90px; gap: 10px; align-items: center; }
+.yao-row { display: grid; grid-template-columns: 45px 120px 90px; gap: 10px; align-items: center; }
 
 @media (max-width: 480px) {
   .yao-row {

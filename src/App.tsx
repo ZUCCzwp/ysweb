@@ -339,28 +339,30 @@ function App() {
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <div className="form-group">
-                    <label className="label">提取随机数</label>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                      <input type="text" value={text0} onChange={e => setText0(e.target.value)} placeholder="数据位" style={{ flex: 1, minWidth: '120px' }} />
-                      <button className="btn btn-primary" onClick={getNumFromURL} style={{ width: isMobile ? '100%' : '80px' }}>获取</button>
+                  <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                    <div style={{ flex: '1 1 180px' }}>
+                      <label className="label" style={{ marginBottom: '4px' }}>提取随机数</label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input type="text" value={text0} onChange={e => setText0(e.target.value)} placeholder="数据位" style={{ flex: 1, minWidth: '80px' }} />
+                        <button className="btn btn-primary" onClick={getNumFromURL} style={{ width: '60px', padding: '0', fontSize: '12px' }}>获取</button>
+                      </div>
+                    </div>
+                    <div style={{ flex: '1 1 180px' }}>
+                      <label className="label" style={{ marginBottom: '4px' }}>输入模式</label>
+                      <Segmented
+                        block
+                        value={inputType}
+                        onChange={value => setInputType(value as string)}
+                        options={[
+                          { label: '手动', value: '1', icon: <Fingerprint size={12} /> },
+                          { label: '联动', value: '2', icon: <Database size={12} /> },
+                        ]}
+                      />
                     </div>
                   </div>
-                  <div className="form-group">
-                    <label className="label">输入模式</label>
-                    <Segmented
-                      block
-                      value={inputType}
-                      onChange={value => setInputType(value as string)}
-                      options={[
-                        { label: '手动输入', value: '1', icon: <Fingerprint size={14} /> },
-                        { label: '联动数据', value: '2', icon: <Database size={14} /> },
-                      ]}
-                    />
-                  </div>
                   {inputType === '2' && (
-                    <div className="form-group">
-                      <label className="label">定位提取 (4位)</label>
+                    <div className="form-group" style={{ marginBottom: '12px' }}>
+                      <label className="label" style={{ marginBottom: '4px' }}>定位提取 (4位)</label>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         {[
                           { label: '万千百十', idxs: [0, 1, 2, 3] },
@@ -379,10 +381,14 @@ function App() {
                       </div>
                     </div>
                   )}
-                  <div className="form-group">
-                    <label className="label">转换数值</label>
-                    <input type="text" value={text1} onChange={e => setText1(e.target.value)} placeholder="4位数字" disabled={inputType === '2'} />
-                    <button className="btn btn-primary" style={{ marginTop: '12px' }} onClick={handleTiandi}>天地数起卦</button>
+                  <div className="form-group" style={{ marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+                      <div style={{ flex: 1 }}>
+                        <label className="label" style={{ marginBottom: '4px' }}>转换数值</label>
+                        <input type="text" value={text1} onChange={e => setText1(e.target.value)} placeholder="4位数字" disabled={inputType === '2'} style={{ width: '100px' }} />
+                      </div>
+                      <button className="btn btn-primary" style={{ width: 'auto', padding: '0 16px' }} onClick={handleTiandi}>天地数起卦</button>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -550,25 +556,6 @@ function App() {
       </AnimatePresence>
 
         <main className="main-content">
-          <motion.section 
-            className="card" 
-            style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <span className="card-title">🎯 结果比对</span>
-            <input type="text" value={targetLottery}
-              onChange={e => setTargetLottery(e.target.value)}
-              placeholder="输入目标数字"
-              style={{ width: '150px', margin: 0 }} />
-          </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div className={`badge ${results?.zhushu?.includes(targetLottery) ? 'badge-active' : ''}`} style={{ width: '70px', height: '32px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>主方</div>
-            <div className={`badge ${results?.bianshu?.includes(targetLottery) ? 'badge-active' : ''}`} style={{ width: '70px', height: '32px', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>客方</div>
-          </div>
-        </motion.section>
 
         <motion.div 
           className="card"
