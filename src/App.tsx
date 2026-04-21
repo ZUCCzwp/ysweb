@@ -24,7 +24,6 @@ function App() {
   const [caipiaos, setCaipiaos] = useState<{ issue: string; nums: string }[]>(
     Array(6).fill({ issue: '', nums: '' })
   );
-  const [targetLottery, setTargetLottery] = useState('');
   const [activeLotteryBtn, setActiveLotteryBtn] = useState<number[]>([0, 1, 2]);
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [isLoading, setIsLoading] = useState(false);
