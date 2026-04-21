@@ -1,14 +1,10 @@
 import { useState, useEffect } from 'react';
-import { ConfigProvider, theme, Select, Segmented, Button, Space, Typography, Tag } from 'antd';
+import { ConfigProvider, theme, Select, Segmented, Button, Space } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RefreshCw, 
-  Settings, 
   Database, 
   Fingerprint, 
-  ArrowUpDown, 
-  Layers,
-  Zap,
   ChevronDown,
   ChevronUp,
   PanelLeftClose,
@@ -23,7 +19,6 @@ function App() {
   const [text1, setText1] = useState('');
   const [inputType, setInputType] = useState('1');
   const [tiandiPos, setTiandiPos] = useState<number[]>([0, 1, 2, 3]);
-  const [numFormat, setNumFormat] = useState('1');
 
   // Lottery Pattern (6 historical periods + 1 target)
   const [caipiaos, setCaipiaos] = useState<{ issue: string; nums: string }[]>(

@@ -19,14 +19,14 @@ const ParticlesBackground: React.FC = () => {
     };
 
     class Star {
-      x: number;
-      y: number;
-      size: number;
-      opacity: number;
-      fadeSpeed: number;
-      speedX: number;
-      speedY: number;
-      blink: boolean;
+      x!: number;
+      y!: number;
+      size!: number;
+      opacity!: number;
+      fadeSpeed!: number;
+      speedX!: number;
+      speedY!: number;
+      blink!: boolean;
 
       constructor() {
         this.reset();
