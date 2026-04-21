@@ -28,6 +28,7 @@ function App() {
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [isLoading, setIsLoading] = useState(false);
   const [isAutoMode, setIsAutoMode] = useState(true);
+  const [lotteryOffset, setLotteryOffset] = useState(0);
 
   // Parity Pattern
   const [parityNums, setParityNums] = useState(['', '', '', '', '', '', '']);
@@ -56,14 +57,14 @@ function App() {
     let interval: any;
     if (isAutoMode) {
       // Initial fetch
-      fetchLotteryData();
+      fetchLotteryData(lotteryOffset);
       // Set interval
       interval = setInterval(() => {
-        fetchLotteryData();
+        fetchLotteryData(lotteryOffset);
       }, 10000);
     }
     return () => clearInterval(interval);
-  }, [isAutoMode, sortOrder]);
+  }, [isAutoMode, sortOrder, lotteryOffset]);
 
   const getNumFromURL = () => {
     const str = "0123456789";
@@ -187,9 +188,9 @@ function App() {
       if (!val) return p;
       const count = Array.from(val).filter(c => parseInt(c) % 2 !== 0).length;
       // 模拟逻辑：基于奇数个数设置阴阳
-      if (count === 0) return Div.YIN;
+      if (count === 0) return Div.LAOYIN;
       if (count === 1) return Div.YANG;
-      if (count === 2) return Div.LAOYIN;
+      if (count === 2) return Div.YIN;
       return Div.LAOYANG;
     });
     setParityPics(pics);
@@ -208,11 +209,12 @@ function App() {
     processGua([findNum(bgSym[0]), findNum(bgSym[1])], [findNum(biSym[0]), findNum(biSym[1])]);
   };
 
-  const fetchLotteryData = async () => {
+  const fetchLotteryData = async (offsetVal?: number) => {
+    const currentOffset = offsetVal !== undefined ? offsetVal : lotteryOffset;
     setIsLoading(true);
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${baseUrl}/lottery/latest?lottery_id=HN5FC`);
+      const response = await fetch(`${baseUrl}/lottery/latest?lottery_id=HN5FC&limit=6&offset=${currentOffset}`);
       const result = await response.json();
       if (result.data) {
         let sorted = [...result.data];
@@ -436,12 +438,34 @@ function App() {
                           { label: '正', value: 'asc' },
                         ]}
                       />
+                      <Button
+                        size="small"
+                        onClick={() => {
+                          const next = lotteryOffset + 1;
+                          setLotteryOffset(next);
+                          fetchLotteryData(next);
+                        }}
+                      >
+                        上一期
+                      </Button>
+                      {lotteryOffset > 0 && (
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            const next = Math.max(0, lotteryOffset - 1);
+                            setLotteryOffset(next);
+                            fetchLotteryData(next);
+                          }}
+                        >
+                          下一期
+                        </Button>
+                      )}
                       {!isAutoMode && (
                         <Button
                           type="primary"
                           size="small"
                           icon={<RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />}
-                          onClick={fetchLotteryData}
+                          onClick={() => fetchLotteryData()}
                           loading={isLoading}
                         >
                           同步
@@ -534,7 +558,7 @@ function App() {
                             setParityPics(next);
                           }}
                           className="yao-select"
-                          style={{ width: isMobile ? '100%' : 90 }}
+                          style={{ width: isMobile ? '100%' : 130 }}
                           options={[
                             { label: Div.LAOYIN, value: Div.LAOYIN },
                             { label: Div.YANG, value: Div.YANG },
