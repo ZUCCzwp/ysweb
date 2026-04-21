@@ -295,7 +295,7 @@ function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  style={{ flex: '1 1 300px', padding: '12px' }}
+                  style={{ flex: '1 1 200px', padding: '12px' }}
                 >
                   <div className="card-header" onClick={() => setIsLotteryExpanded(!isLotteryExpanded)} style={{ cursor: 'pointer', marginBottom: isLotteryExpanded ? '8px' : 0 }}>
                     <span className="card-title" style={{ fontSize: '0.85rem' }}>🧩 期号定位</span>
@@ -310,35 +310,38 @@ function App() {
                         transition={{ duration: 0.3 }}
                         style={{ overflow: 'hidden' }}
                       >
-                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', marginBottom: '8px', justifyContent: 'flex-end' }}>
-                          <Space size={4}>
+                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', height: '48px', marginBottom: '8px', justifyContent: 'space-between' }}>
+                          <Space size={6} style={{ width: '100%', justifyContent: 'space-between' }}>
                             <Select
                               size="small"
                               value={isAutoMode ? 'auto' : 'manual'}
                               onChange={val => setIsAutoMode(val === 'auto')}
-                              style={{ width: 75, fontSize: '11px' }}
-                              options={[{ label: '手动', value: 'manual' }, { label: '自动', value: 'auto' }]}
+                              style={{ width: 85, fontSize: '12px' }}
+                              options={[{ label: '手动模式', value: 'manual' }, { label: '自动模式', value: 'auto' }]}
                             />
                             <Segmented
                               size="small"
                               value={sortOrder}
                               onChange={val => handleSortOrderChange(val as any)}
-                              options={[{ label: '倒', value: 'desc' }, { label: '正', value: 'asc' }]}
+                              options={[{ label: '倒序', value: 'desc' }, { label: '正序', value: 'asc' }]}
                             />
-                            <Button size="small" style={{ fontSize: '11px', padding: '0 4px' }} onClick={() => { setLotteryOffset(lotteryOffset + 1); fetchLotteryData(lotteryOffset + 1); }}>上一期</Button>
-                            {!isAutoMode && <Button type="primary" size="small" style={{ fontSize: '11px' }} onClick={() => fetchLotteryData()} loading={isLoading}>同步</Button>}
+                            <Space size={4}>
+                              <Button size="small" style={{ fontSize: '11px', padding: '0 8px', minWidth: '60px' }} onClick={() => { setLotteryOffset(lotteryOffset + 1); fetchLotteryData(lotteryOffset + 1); }}>上一期</Button>
+                              <Button size="small" style={{ fontSize: '11px', padding: '0 8px', minWidth: '60px' }} disabled={lotteryOffset <= 0} onClick={() => { const next = Math.max(0, lotteryOffset - 1); setLotteryOffset(next); fetchLotteryData(next); }}>下一期</Button>
+                              {!isAutoMode && <Button type="primary" size="small" style={{ fontSize: '11px', padding: '0 10px' }} onClick={() => fetchLotteryData()} loading={isLoading}>同步</Button>}
+                            </Space>
                           </Space>
                         </div>
-                        <div className="lottery-layout">
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div className="lottery-layout" style={{ gridTemplateColumns: '1fr 140px', gap: '12px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             {caipiaos.map((item, i) => (
-                              <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', width: '70px' }}>{isAutoMode ? (item.issue || `第 ${i + 1} 期`) : `第 ${i + 1} 期`}</span>
-                                <input type="text" value={item.nums} onChange={e => { const next = [...caipiaos]; next[i] = { ...next[i], nums: e.target.value }; setCaipiaos(next); }} style={{ flex: 1, padding: '6px' }} />
+                              <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center', height: '32px' }}>
+                                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', width: '105px', whiteSpace: 'nowrap' }}>{isAutoMode ? (item.issue || `第 ${i + 1} 期`) : `第 ${i + 1} 期`}</span>
+                                <input type="text" value={item.nums} onChange={e => { const next = [...caipiaos]; next[i] = { ...next[i], nums: e.target.value }; setCaipiaos(next); }} style={{ flex: 1, padding: '4px 8px', height: '28px', fontSize: '12px' }} />
                               </div>
                             ))}
                           </div>
-                          <div className="lottery-btns">
+                          <div className="lottery-btns" style={{ gridTemplateColumns: '1fr 1fr' }}>
                             {[
                               { label: '前三位', idxs: [0, 1, 2] },
                               { label: '万千十', idxs: [0, 1, 3] },
@@ -372,7 +375,7 @@ function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  style={{ flex: '1 1 300px', padding: '12px' }}
+                  style={{ flex: '1 1 100px', padding: '12px' }}
                 >
                   <div className="card-header" onClick={() => setIsDivinationExpanded(!isDivinationExpanded)} style={{ cursor: 'pointer', marginBottom: isDivinationExpanded ? '8px' : 0 }}>
                     <span className="card-title" style={{ fontSize: '0.85rem' }}>☯️ 综合起卦输入</span>
@@ -387,37 +390,32 @@ function App() {
                         transition={{ duration: 0.3 }}
                         style={{ overflow: 'hidden' }}
                       >
-                        <div style={{ marginBottom: '12px', padding: '10px', background: 'rgba(0,0,0,0.15)', borderRadius: '8px' }}>
-                          <div className="label" style={{ marginBottom: '6px', fontSize: '0.75rem' }}>🌓 天地数</div>
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            <input type="text" value={text1} onChange={e => setText1(e.target.value)} placeholder="4位数值" style={{ flex: 1, height: '32px', fontSize: '12px' }} />
-                            <button className="btn btn-primary" style={{ width: '60px', height: '32px', fontSize: '11px', padding: 0 }} onClick={handleTiandi}>起卦</button>
-                          </div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', height: '48px', padding: '0 10px', background: 'rgba(0,0,0,0.15)', borderRadius: '8px' }}>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', width: '50px' }}>天地数</span>
+                          <input type="text" value={text1} onChange={e => setText1(e.target.value)} placeholder="4位数值" style={{ flex: 1, height: '28px', fontSize: '12px' }} />
+                          <button className="btn btn-primary" style={{ width: '50px', height: '28px', fontSize: '11px', padding: 0, marginLeft: '8px' }} onClick={handleTiandi}>起卦</button>
                         </div>
-                        <div>
-                          <div className="label" style={{ marginBottom: '8px', fontSize: '0.75rem' }}>⚖️ 奇偶特征</div>
-                          <div className="parity-grid" style={{ gap: '4px' }}>
-                            {['上爻', '五爻', '四爻', '三爻', '二爻', '初爻'].map((label, i) => (
-                              <div className="yao-row" key={i} style={{ marginBottom: '2px' }}>
-                                <span className="yao-label" style={{ fontSize: '11px', width: '35px' }}>{label}</span>
-                                <input type="text" value={parityNums[i]} onChange={e => { const next = [...parityNums]; next[i] = e.target.value; setParityNums(next); }} style={{ height: '28px', fontSize: '12px' }} />
-                                <Select
-                                  size="small"
-                                  value={parityPics[i]}
-                                  onChange={val => { const next = [...parityPics]; next[i] = val; setParityPics(next); }}
-                                  style={{ width: 85, height: '28px' }}
-                                  dropdownStyle={{ minWidth: '110px' }}
-                                  options={[
-                                    { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.LAOYIN}</span>, value: Div.LAOYIN },
-                                    { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.YANG}</span>, value: Div.YANG },
-                                    { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.YIN}</span>, value: Div.YIN },
-                                    { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.LAOYANG}</span>, value: Div.LAOYANG },
-                                  ]}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                          <button className="btn btn-primary" style={{ marginTop: '10px', width: '100%', height: '32px', fontSize: '12px' }} onClick={handleParityExec}>执行成卦</button>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          {['上爻', '五爻', '四爻', '三爻', '二爻', '初爻'].map((label, i) => (
+                            <div className="yao-row" key={i} style={{ height: '32px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              <span className="yao-label" style={{ fontSize: '11px', width: '35px', color: 'var(--text-secondary)' }}>{label}</span>
+                              <input type="text" value={parityNums[i]} onChange={e => { const next = [...parityNums]; next[i] = e.target.value; setParityNums(next); }} style={{ flex: 1, height: '28px', fontSize: '12px' }} />
+                              <Select
+                                size="small"
+                                value={parityPics[i]}
+                                onChange={val => { const next = [...parityPics]; next[i] = val; setParityPics(next); }}
+                                style={{ width: 85, height: '28px' }}
+                                dropdownStyle={{ minWidth: '110px' }}
+                                options={[
+                                  { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.LAOYIN}</span>, value: Div.LAOYIN },
+                                  { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.YANG}</span>, value: Div.YANG },
+                                  { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.YIN}</span>, value: Div.YIN },
+                                  { label: <span style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '11px' }}>{Div.LAOYANG}</span>, value: Div.LAOYANG },
+                                ]}
+                              />
+                            </div>
+                          ))}
+                          <button className="btn btn-primary" style={{ marginTop: '8px', width: '100%', height: '32px', fontSize: '12px' }} onClick={handleParityExec}>执行成卦</button>
                         </div>
                       </motion.div>
                     )}
@@ -425,12 +423,12 @@ function App() {
                 </motion.section>
 
                 {/* 3. Immediate Analysis */}
-                <motion.section 
-                  className="card" 
-                  initial={{ opacity: 0, scale: 0.95 }} 
-                  animate={{ opacity: 1, scale: 1 }} 
+                <motion.section
+                  className="card"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.3 }}
-                  style={{ flex: '0 1 180px', padding: '12px' }}
+                  style={{ flex: '1 1 200px', padding: '12px' }}
                 >
                   <div className="card-header" onClick={() => setIsAnalysisExpanded(!isAnalysisExpanded)} style={{ cursor: 'pointer', marginBottom: isAnalysisExpanded ? '8px' : 0 }}>
                     <span className="card-title" style={{ fontSize: '0.85rem' }}>⚛️ 即时分析</span>
@@ -445,20 +443,24 @@ function App() {
                         transition={{ duration: 0.3 }}
                         style={{ overflow: 'hidden' }}
                       >
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', gap: '12px', alignItems: 'flex-start', justifyContent: 'center' }}>
                           {results ? (
                             <>
-                              <div className="gua-card" style={{ width: '100%', padding: '0 4px', border: 'none', background: 'transparent' }}>
-                                <div className="card-title" style={{ fontSize: '0.45rem', padding: '0', marginBottom: '0', opacity: 0.7, textAlign: 'left', width: '100%' }}>九宫</div>
+                              <div className="gua-card" style={{ padding: '0', border: 'none', background: 'transparent' }}>
+                                <div style={{ height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                                  <div className="card-title" style={{ fontSize: '0.6rem', opacity: 0.8 }}>九宫</div>
+                                </div>
                                 <NinePalaces data={results.ninePalacesGua} isGua isCompact />
                               </div>
-                              <div className="gua-card" style={{ width: '100%', padding: '0 4px', border: 'none', background: 'transparent' }}>
-                                <div className="card-title" style={{ fontSize: '0.45rem', padding: '0', marginBottom: '0', opacity: 0.7, textAlign: 'left', width: '100%' }}>天干</div>
+                              <div className="gua-card" style={{ padding: '0', border: 'none', background: 'transparent' }}>
+                                <div style={{ height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
+                                  <div className="card-title" style={{ fontSize: '0.6rem', opacity: 0.8 }}>天干</div>
+                                </div>
                                 <NinePalaces data={results.modeTian} isCompact />
                               </div>
                             </>
                           ) : (
-                            <div style={{ padding: '15px 0', color: 'var(--text-secondary)', opacity: 0.5, textAlign: 'center', fontSize: '0.7rem' }}>
+                            <div style={{ height: '240px', padding: '20px 0', color: 'var(--text-secondary)', opacity: 0.5, textAlign: 'center', fontSize: '0.7rem' }}>
                               分析待投
                             </div>
                           )}
@@ -507,18 +509,19 @@ function App() {
 
 function NinePalaces({ data, isGua, isCompact }: { data: any[], isGua?: boolean, isCompact?: boolean }) {
   return (
-    <div className="box-wrap" style={{ gap: isCompact ? '1px' : '4px', padding: isCompact ? '0' : '2px', background: 'transparent' }}>
+    <div className="box-wrap" style={{ gap: '4px', padding: '0', background: 'transparent' }}>
       {data.map((val, i) => (
         <div
           key={i}
           className="box"
           style={{
-            height: isCompact ? '32px' : '60px',
-            width: isCompact ? '32px' : '70px',
-            fontSize: isCompact ? '11px' : '14px',
-            borderRadius: isCompact ? '2px' : '4px',
-            padding: isCompact ? '0' : '10px',
-            border: isCompact ? '1px solid var(--border)' : 'none'
+            height: isCompact ? '68px' : '60px',
+            width: isCompact ? '48px' : '70px',
+            fontSize: isCompact ? '12px' : '14px',
+            borderRadius: isCompact ? '4px' : '4px',
+            padding: isCompact ? '4px' : '10px',
+            border: isCompact ? '1px solid var(--border)' : 'none',
+            background: isCompact ? 'rgba(30, 41, 59, 0.4)' : 'var(--bg-surface)'
           }}
         >
           {isGua ? (
