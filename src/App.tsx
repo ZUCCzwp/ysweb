@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { ConfigProvider, theme, Select, Segmented, Button, Space } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  RefreshCw,
   ChevronDown,
   ChevronUp,
   PanelLeftClose,
@@ -35,13 +34,7 @@ function App() {
 
   // Results State
   const [results, setResults] = useState<any>(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
