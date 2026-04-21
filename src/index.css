@@ -286,12 +286,8 @@ input[type="text"]:focus {
 
 @media (max-width: 480px) {
   .yao-row {
-    grid-template-columns: 45px 1fr;
-    grid-template-rows: auto auto;
-  }
-  .yao-row .ant-select {
-    grid-column: 1 / -1;
-    width: 100% !important;
+    grid-template-columns: 40px 1fr 85px;
+    gap: 6px;
   }
 }
 
