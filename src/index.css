@@ -18,6 +18,14 @@
   --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
   --glass-bg: rgba(30, 41, 59, 0.6);
   --glass-border: rgba(255, 255, 255, 0.08);
+  
+  /* Standard UI Sizes */
+  --font-base: 14px;
+  --font-md: 16px;
+  --font-sm: 13px;
+  --font-xs: 12px;
+  --btn-h: 40px;
+  --btn-h-sm: 32px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,7 +34,8 @@ body {
   font-family: 'Inter', -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
   background-color: transparent;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: var(--font-base);
   -webkit-font-smoothing: antialiased;
   padding: 24px;
 }
@@ -86,7 +95,7 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
-.card-title { font-size: 1.125rem; font-weight: 600; color: var(--accent); }
+.card-title { font-size: var(--font-md); font-weight: 600; color: var(--accent); }
 
 header {
   width: 100%;
@@ -126,16 +135,17 @@ header h1 { font-size: 1.5rem; letter-spacing: -0.025em; color: var(--text-prima
 #Date { font-size: 0.875rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 
 .form-group { margin-bottom: 16px; }
-.label { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+.label { display: block; font-size: var(--font-sm); font-weight: 500; color: var(--text-secondary); margin-bottom: 8px; }
 
 input[type="text"] {
   width: 100%;
   background-color: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 0 14px;
+  height: var(--btn-h);
   color: var(--text-primary);
-  font-size: 0.9375rem;
+  font-size: var(--font-base);
   transition: all 0.2s;
 }
 
@@ -149,10 +159,11 @@ input[type="text"]:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
+  height: var(--btn-h);
+  padding: 0 20px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: var(--font-base);
   cursor: pointer;
   transition: all 0.2s;
   border: none;
@@ -204,9 +215,19 @@ input[type="text"]:focus {
 .lottery-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
 .lottery-btns { display: flex; flex-direction: column; gap: 6px; }
 .btn-tool {
-  font-size: 0.75rem; padding: 6px; background: var(--bg-elevated); color: var(--text-secondary);
-  border: 1px solid var(--border); border-radius: 4px; cursor: pointer;
+  font-size: var(--font-xs); 
+  height: var(--btn-h-sm);
+  padding: 0 12px; 
+  background: var(--bg-elevated); 
+  color: var(--text-secondary);
+  border: 1px solid var(--border); 
+  border-radius: 6px; 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .btn-tool:hover { background: var(--border); color: var(--text-primary); }
 
 .parity-grid { display: flex; flex-direction: column; gap: 8px; }

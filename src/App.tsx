@@ -255,7 +255,23 @@ function App() {
           borderRadius: 8,
           colorBgBase: '#0f172a',
           colorBgContainer: '#1e293b',
+          controlHeight: 40,
+          fontSize: 14,
         },
+        components: {
+          Segmented: {
+            controlHeight: 32,
+            fontSize: 13,
+          },
+          Select: {
+            controlHeight: 32,
+            fontSize: 13,
+          },
+          Button: {
+            controlHeight: 32,
+            fontSize: 13,
+          }
+        }
       }}
     >
       <ParticlesBackground />
@@ -388,7 +404,7 @@ function App() {
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px', justifyContent: 'flex-end' }}>
                     <Space size={8}>
                       <Select
                         size="small"
