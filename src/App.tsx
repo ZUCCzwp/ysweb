@@ -15,10 +15,7 @@ import ParticlesBackground from './ParticlesBackground';
 
 function App() {
   const [time, setTime] = useState(new Date());
-  const [text0, setText0] = useState('');
   const [text1, setText1] = useState('');
-  const [inputType, setInputType] = useState('1');
-  const [tiandiPos, setTiandiPos] = useState<number[]>([0, 1, 2, 3]);
 
   // Lottery Pattern (6 historical periods + 1 target)
   const [caipiaos, setCaipiaos] = useState<{ issue: string; nums: string }[]>(
@@ -66,21 +63,6 @@ function App() {
     return () => clearInterval(interval);
   }, [isAutoMode, sortOrder, lotteryOffset]);
 
-  const getNumFromURL = () => {
-    const str = "0123456789";
-    let res = "";
-    for (let i = 0; i < 5; i++) res += str[Math.floor(Math.random() * 10)];
-    setText0(res);
-    if (inputType === '2') {
-      setText1(tiandiPos.map(idx => res[idx] || '0').join(''));
-    }
-  };
-
-  useEffect(() => {
-    if (inputType === '2' && text0) {
-      setText1(tiandiPos.map(idx => text0[idx] || '0').join(''));
-    }
-  }, [tiandiPos, text0, inputType]);
 
   const handleTiandi = () => {
     if (!text1 || text1.length < 4) return alert("请输入4位数字");
@@ -209,6 +191,29 @@ function App() {
     processGua([findNum(bgSym[0]), findNum(bgSym[1])], [findNum(biSym[0]), findNum(biSym[1])]);
   };
 
+  const updateParityFromCaipiaos = (records: { issue: string; nums: string }[]) => {
+    const currentIdxs = activeLotteryBtn || [0, 1, 2];
+    const newParity = Array(6).fill('');
+    records.forEach((c, i) => {
+      if (!c.nums) return;
+      newParity[i] = currentIdxs.map(idx => c.nums[idx]).join('');
+    });
+    setParityNums(newParity);
+    parityExecWithNums(newParity);
+  };
+
+  const handleSortOrderChange = (newOrder: 'desc' | 'asc') => {
+    if (newOrder === sortOrder) return;
+    setSortOrder(newOrder);
+    
+    if (!isAutoMode) {
+      // 手动模式下，直接反转当前已有的数据，不重新请求接口，保护手动输入
+      const nextCaipiaos = [...caipiaos].reverse();
+      setCaipiaos(nextCaipiaos);
+      updateParityFromCaipiaos(nextCaipiaos);
+    }
+  };
+
   const fetchLotteryData = async (offsetVal?: number) => {
     const currentOffset = offsetVal !== undefined ? offsetVal : lotteryOffset;
     setIsLoading(true);
@@ -230,16 +235,9 @@ function App() {
         }));
         setCaipiaos(newRecords);
 
-        // Use timeout to ensure state is committed before calculation
+        // 使用 setTimeout 确保 state 已提交
         setTimeout(() => {
-          const currentIdxs = activeLotteryBtn || [0, 1, 2];
-          const newParity = Array(6).fill('');
-          newRecords.forEach((c, i) => {
-            if (!c.nums) return;
-            newParity[i] = currentIdxs.map(idx => c.nums[idx]).join('');
-          });
-          setParityNums(newParity);
-          parityExecWithNums(newParity);
+          updateParityFromCaipiaos(newRecords);
         }, 0);
       }
     } catch (error) {
@@ -340,55 +338,25 @@ function App() {
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
                   style={{ overflow: 'hidden' }}
                 >
-                  <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                    <div style={{ flex: '1 1 180px' }}>
-                      <label className="label" style={{ marginBottom: '4px' }}>提取随机数</label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <input type="text" value={text0} onChange={e => setText0(e.target.value)} placeholder="数据位" style={{ flex: 1, minWidth: '80px' }} />
-                        <button className="btn btn-primary" onClick={getNumFromURL} style={{ width: '60px', padding: '0', fontSize: '12px' }}>获取</button>
-                      </div>
-                    </div>
-                    <div style={{ flex: '1 1 180px' }}>
-                      <label className="label" style={{ marginBottom: '4px' }}>输入模式</label>
-                      <Segmented
-                        block
-                        value={inputType}
-                        onChange={value => setInputType(value as string)}
-                        options={[
-                          { label: '手动', value: '1', icon: <Fingerprint size={12} /> },
-                          { label: '联动', value: '2', icon: <Database size={12} /> },
-                        ]}
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+                    <div style={{ flex: 1 }}>
+                      <label className="label" style={{ marginBottom: '4px' }}>输入4位数值</label>
+                      <input 
+                        type="text" 
+                        value={text1} 
+                        onChange={e => setText1(e.target.value)} 
+                        placeholder="例如: 1234" 
+                        style={{ width: '100%' }} 
                       />
                     </div>
-                  </div>
-                  {inputType === '2' && (
-                    <div className="form-group" style={{ marginBottom: '12px' }}>
-                      <label className="label" style={{ marginBottom: '4px' }}>定位提取 (4位)</label>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                        {[
-                          { label: '万千百十', idxs: [0, 1, 2, 3] },
-                          { label: '万千百个', idxs: [0, 1, 2, 4] },
-                          { label: '千百十个', idxs: [1, 2, 3, 4] },
-                          { label: '万千十个', idxs: [0, 1, 3, 4] },
-                          { label: '万百十个', idxs: [0, 2, 3, 4] },
-                        ].map((p, i) => (
-                          <button key={i} className="btn-tool"
-                            style={{
-                              background: tiandiPos.join('') === p.idxs.join('') ? 'var(--primary)' : '',
-                              color: tiandiPos.join('') === p.idxs.join('') ? 'white' : 'var(--text-secondary)'
-                            }}
-                            onClick={() => setTiandiPos(p.idxs)}>{p.label}</button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div className="form-group" style={{ marginBottom: '12px' }}>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-                      <div style={{ flex: 1 }}>
-                        <label className="label" style={{ marginBottom: '4px' }}>转换数值</label>
-                        <input type="text" value={text1} onChange={e => setText1(e.target.value)} placeholder="4位数字" disabled={inputType === '2'} style={{ width: '100px' }} />
-                      </div>
-                      <button className="btn btn-primary" style={{ width: 'auto', padding: '0 16px' }} onClick={handleTiandi}>天地数起卦</button>
+                    <div style={{ flex: 1 }}>
+                      <button 
+                        className="btn btn-primary" 
+                        style={{ width: '100%', height: '40px', padding: '0' }} 
+                        onClick={handleTiandi}
+                      >
+                        天地数起卦
+                      </button>
                     </div>
                   </div>
                 </motion.div>
@@ -432,7 +400,7 @@ function App() {
                       <Segmented
                         size="small"
                         value={sortOrder}
-                        onChange={val => setSortOrder(val as any)}
+                        onChange={val => handleSortOrderChange(val as any)}
                         options={[
                           { label: '倒', value: 'desc' },
                           { label: '正', value: 'asc' },
@@ -478,8 +446,8 @@ function App() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {caipiaos.map((item, i) => (
                         <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                          <span style={{ fontSize: '11px', color: 'var(--text-secondary)', width: '100px', whiteSpace: 'nowrap' }} title={item.issue}>
-                            {item.issue || `第 ${i + 1} 期`}
+                          <span style={{ fontSize: '11px', color: 'var(--text-secondary)', width: '100px', whiteSpace: 'nowrap' }} title={isAutoMode ? item.issue : undefined}>
+                            {isAutoMode ? (item.issue || `第 ${i + 1} 期`) : `第 ${i + 1} 期`}
                           </span>
                           <input type="text" value={item.nums}
                             onChange={e => {
@@ -639,20 +607,8 @@ function App() {
                     <NinePalaces data={results.ninePalacesGua} isGua />
                   </motion.div>
                   <motion.div className="gua-card" whileHover={{ scale: 1.05 }}>
-                    <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🕸️ 九宫 (中宫值)</div>
-                    <NinePalaces data={results.modeLuoshu} />
-                  </motion.div>
-                  <motion.div className="gua-card" whileHover={{ scale: 1.05 }}>
                     <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🔢 天干数</div>
                     <NinePalaces data={results.modeTian} />
-                  </motion.div>
-                  <motion.div className="gua-card" whileHover={{ scale: 1.05 }}>
-                    <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🔢 地支数</div>
-                    <NinePalaces data={results.modeDi} />
-                  </motion.div>
-                  <motion.div className="gua-card" whileHover={{ scale: 1.05 }}>
-                    <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🔢 先天序数</div>
-                    <NinePalaces data={results.modeXiantian} />
                   </motion.div>
                 </div>
               </motion.div>
@@ -683,6 +639,12 @@ function NinePalaces({ data, isGua }: { data: any[], isGua?: boolean }) {
 }
 
 function GuaTable({ title, data, symbols, upDown, index }: any) {
+  const flatSymbols = symbols ? [...symbols[0], ...symbols[1]] : null;
+  const flatUpDown = upDown ? [
+    upDown[0], upDown[0], upDown[0],
+    upDown[1], upDown[1], upDown[1]
+  ] : null;
+
   return (
     <motion.div 
       className="gua-card"
@@ -692,22 +654,34 @@ function GuaTable({ title, data, symbols, upDown, index }: any) {
       whileHover={{ y: -5, borderColor: 'var(--primary)', backgroundColor: 'rgba(99, 102, 241, 0.1)' }}
     >
       <table className="table_gua">
-        <thead><tr><th>{title}</th></tr></thead>
+        <thead>
+          <tr>
+            <th colSpan={flatSymbols && flatUpDown ? 2 : 1}>{title}</th>
+          </tr>
+        </thead>
         <tbody>
-          {symbols ? (
-            <tr style={{ display: 'flex' }}>
-              <td>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  {symbols[0].map((s: string, i: number) => <div key={i}>{s}</div>)}
-                  {symbols[1].map((s: string, i: number) => <div key={i}>{s}</div>)}
-                </div>
-              </td>
-              {upDown && (
-                <td className="up-down-col">
-                  {upDown.map((u: boolean, i: number) => <div key={i} style={{ color: u ? 'var(--danger)' : '' }}>{u ? '↑' : '↓'}</div>)}
-                </td>
-              )}
-            </tr>
+          {flatSymbols ? (
+            flatSymbols.map((s: string, i: number) => (
+              <tr key={i}>
+                <td>{s}</td>
+                {flatUpDown && i % 3 === 0 && (
+                  <td 
+                    rowSpan={3}
+                    className="up-down-row-col" 
+                    style={{ 
+                      color: flatUpDown[i] ? 'var(--danger)' : 'var(--text-secondary)',
+                      borderLeft: 'none',
+                      fontSize: '20px',
+                      padding: '0 12px',
+                      verticalAlign: 'middle',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {flatUpDown[i] ? '↑' : '↓'}
+                  </td>
+                )}
+              </tr>
+            ))
           ) : (
             data.map((val: any, i: number) => (
               <tr key={i}><td>{val}</td></tr>
@@ -718,5 +692,6 @@ function GuaTable({ title, data, symbols, upDown, index }: any) {
     </motion.div>
   );
 }
+
 
 export default App;
