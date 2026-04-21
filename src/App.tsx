@@ -311,18 +311,17 @@ function App() {
                 className="sidebar"
                 initial={{ width: 0, opacity: 0, marginRight: 0 }}
                 animate={{ 
-                  width: isMobile ? '100%' : 420, 
+                  width: '100%', 
                   opacity: 1, 
-                  marginRight: isMobile ? 0 : 24 
+                  marginRight: 0 
                 }}
                 exit={{ width: 0, opacity: 0, marginRight: 0 }}
                 transition={{ duration: 0.4, ease: 'easeInOut' }}
-                style={{ overflow: 'hidden' }}
+                style={{ overflow: 'visible' }}
               >
           {/* Tiandi Mode */}
           <motion.section 
             className="card" 
-            style={{ marginBottom: '20px' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -393,7 +392,6 @@ function App() {
           {/* Lottery Mode */}
           <motion.section 
             className="card" 
-            style={{ marginBottom: '20px' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -603,6 +601,8 @@ function App() {
                   <GuaTable title="客数" data={results.canwuBian} isVertical index={6} />
                   <div style={{ textAlign: 'center', fontSize: '13px', color: 'var(--accent)', fontWeight: 'bold' }}>{results.bianshu.join('/')}</div>
                 </div>
+                <GuaTable title="✨ 归藏" data={results.guizang} index={7} />
+                <GuaTable title="🔢 参伍倚数" data={results.yishu} index={8} />
               </motion.div>
             ) : (
               <motion.div 
@@ -624,8 +624,6 @@ function App() {
                 style={{ overflow: 'hidden' }}
               >
                 <div className="charts-v" style={{ marginTop: '24px' }}>
-                  <GuaTable title="✨ 归藏" data={results.guizang} index={7} />
-                  <GuaTable title="🔢 参伍倚数" data={results.yishu} index={8} />
                   <motion.div className="gua-card" whileHover={{ scale: 1.05 }}>
                     <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🕸️ 九宫 (核心卦位)</div>
                     <NinePalaces data={results.ninePalacesGua} isGua />
@@ -634,9 +632,6 @@ function App() {
                     <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🕸️ 九宫 (中宫值)</div>
                     <NinePalaces data={results.modeLuoshu} />
                   </motion.div>
-                </div>
-
-                <div className="charts-v" style={{ marginTop: '24px' }}>
                   <motion.div className="gua-card" whileHover={{ scale: 1.05 }}>
                     <div className="card-title" style={{ fontSize: '0.8rem', padding: '4px' }}>🔢 天干数</div>
                     <NinePalaces data={results.modeTian} />

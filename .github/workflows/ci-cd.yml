@@ -66,15 +66,8 @@ jobs:
             # Update image tag and restart
             export FRONTEND_IMAGE=${{ env.ACR_REGISTRY }}/${{ env.ACR_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.tag }}
             
-            # If docker-compose.yml exists, use it; otherwise use docker run
-            if [ -f docker-compose.yml ]; then
-              docker compose pull ysweb
-              docker compose up -d ysweb
-            else
-              docker stop ysweb || true
-              docker rm ysweb || true
-              docker run -d --name ysweb -p 80:80 --restart unless-stopped $FRONTEND_IMAGE
-            fi
+            docker compose pull ysweb
+            docker compose up -d ysweb
             
             # Clean up old images
             docker system prune -f
